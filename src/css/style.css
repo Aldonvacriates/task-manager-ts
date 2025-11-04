@@ -1,0 +1,38 @@
+@import url(https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Lexend:wght@300;400;500;600;700;800;900&display=swap);
+
+/* Project-wide helpers adapted from your reference CSS */
+
+html { scroll-behavior: smooth; }
+body { font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
+
+.font-heading { font-family: 'Lexend', sans-serif; }
+
+/* Section title watermark effect */
+.title {
+  background: linear-gradient(180deg, rgba(74,108,247,0.4) 0%, rgba(74,108,247,0) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-fill-color: transparent;
+  opacity: .2;
+  position: absolute;
+  left: 50%;
+  top: 0;
+  transform: translate(-50%, 0);
+  font-size: 40px;
+  font-weight: 800;
+  line-height: 1;
+}
+@media (min-width: 540px){ .title{ font-size: 60px; } }
+@media (min-width: 992px){ .title{ font-size: 95px; } }
+
+/* Active link color to match reference */
+.menu-scroll.active, .submenu-item a.active { color: #4A6CF7; }
+
+/* Utilities used in the Home hero */
+.chip { border-radius: 999px; padding: 10px 12px; background: rgba(74,108,247,.10); color:#7c9cff; border:1px solid rgba(124,156,255,.30) }
+.accent { color: #7c9cff; }
+
+/* Optional: subtle noise overlay background key used in reference */
+.bg-noise-pattern { background-size: cover; background-position: center; background-repeat: no-repeat; }
+
