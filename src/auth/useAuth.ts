@@ -1,35 +1,57 @@
-import { useAuth0 } from "@auth0/auth0-react";
+import {
+  useAuth0,
+  type LogoutOptions,
+  type RedirectLoginOptions,
+  type User,
+} from "@auth0/auth0-react";
 
-type OptionalAuth = {
+type OptionalUser = Pick<
+  User,
+  "sub" | "nickname" | "given_name" | "name" | "picture" | "email"
+>;
+
+export type OptionalAuth = {
   isAuthenticated: boolean;
   isLoading: boolean;
-  user?: {
-    sub?: string;
-    nickname?: string;
-    given_name?: string;
-  } | undefined;
-  loginWithRedirect: () => Promise<void> | void;
-  logout: (opts?: { logoutParams?: { returnTo?: string } }) => void;
+  user?: OptionalUser;
+  loginWithRedirect: (options?: RedirectLoginOptions) => Promise<void>;
+  logout: (options?: LogoutOptions) => void;
 };
 
-export function isAuthConfigured() {
+export function isAuthConfigured(): boolean {
   const domain = import.meta.env.VITE_AUTH0_DOMAIN as string | undefined;
   const clientId = import.meta.env.VITE_AUTH0_CLIENT_ID as string | undefined;
   return Boolean(domain && clientId);
 }
 
 export function useOptionalAuth(): OptionalAuth {
+  const defaultReturnTo =
+    (import.meta.env.VITE_AUTH0_LOGOUT_URI as string | undefined) ??
+    window.location.origin;
+
   if (isAuthConfigured()) {
-    // Safe to call library hook when configured
-    return useAuth0() as unknown as OptionalAuth;
+    const auth = useAuth0();
+    return {
+      isAuthenticated: auth.isAuthenticated,
+      isLoading: auth.isLoading,
+      user: auth.user as OptionalUser | undefined,
+      loginWithRedirect: (options) => auth.loginWithRedirect(options),
+      logout: (options) =>
+        auth.logout({
+          ...options,
+          logoutParams: {
+            returnTo: defaultReturnTo,
+            ...(options?.logoutParams ?? {}),
+          },
+        }),
+    };
   }
-  // Fallback for local/dev when Auth0 env is not set
+
   return {
     isAuthenticated: true,
     isLoading: false,
     user: undefined,
     loginWithRedirect: async () => undefined,
     logout: () => undefined,
-  } satisfies OptionalAuth;
+  };
 }
-

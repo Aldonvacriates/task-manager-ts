@@ -41,13 +41,13 @@ const Signup: React.FC = () => {
     defaultValues: { name: "", email: "", password: "", confirm: "", agree: false },
   });
 
-  const onSubmit = (_: SignupInput) => {
-    // Delegate to Auth0 hosted signup if configured
+  const onSubmit = async (_: SignupInput) => {
     try {
-      // @ts-expect-error allow options in real Auth0 env
-      loginWithRedirect?.({ authorizationParams: { screen_hint: "signup" } });
+      await loginWithRedirect({
+        authorizationParams: { screen_hint: "signup" },
+      });
     } catch {
-      // no-op in dev fallback
+      // dev fallback
     }
   };
 
@@ -66,8 +66,12 @@ const Signup: React.FC = () => {
             type="button"
             onClick={() => {
               try {
-                // @ts-expect-error pass through to Auth0 when configured
-                loginWithRedirect?.({ authorizationParams: { screen_hint: "signup", connection: "google-oauth2" } });
+                loginWithRedirect({
+                  authorizationParams: {
+                    screen_hint: "signup",
+                    connection: "google-oauth2",
+                  },
+                });
               } catch {}
             }}
           >

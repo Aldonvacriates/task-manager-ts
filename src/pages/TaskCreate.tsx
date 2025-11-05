@@ -6,6 +6,7 @@ import type { TaskInput } from "../validation/taskSchema";
 import { useTasks } from "../context/TaskContext";
 import { useNavigate } from "react-router-dom";
 import { useOptionalAuth } from "../auth/useAuth";
+import type { Task } from "../types/task";
 
 const TaskCreate: React.FC = () => {
   const { user } = useOptionalAuth();
@@ -21,13 +22,11 @@ const TaskCreate: React.FC = () => {
   });
 
   const onSubmit = (data: TaskInput) => {
-    const newTask = create({
+    const payload: Omit<Task, "id" | "createdAt" | "updatedAt"> = {
       ...data,
       ownerId: user?.sub,
-      createdAt: "",
-      updatedAt: "",
-      id: "",
-    } as any);
+    };
+    const newTask = create(payload);
     n(`/tasks/${newTask.id}`);
   };
 

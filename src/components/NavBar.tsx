@@ -4,47 +4,54 @@ import { isAuthConfigured, useOptionalAuth } from "../auth/useAuth";
 
 export const NavBar: React.FC = () => {
   const configured = isAuthConfigured();
-  const { loginWithRedirect, logout, isAuthenticated, user } = useOptionalAuth();
+  const { loginWithRedirect, logout, isAuthenticated, user } =
+    useOptionalAuth();
+
   return (
     <nav className="panel nav">
       <div className="header">
-      <div className="row" style={{ alignItems: "center" }}>
-        <Link to="/home">
-        <img src="/Logo.svg" alt="Logo" width={32} height={32} />
-        </Link>
-        {/* <div className="nav-links">
-        <Link to="/home">Home</Link>
-        <Link to="/home#features">Features</Link>
-        <Link to="/signup">Pages ▾</Link>
-        <a href="/home#support">Support</a>
-        </div> */}
-      </div>
-        <div className="row">
+        <div className="row" style={{ alignItems: "center", gap: 16 }}>
+          <Link to="/home" aria-label="Task Manager Home">
+            <img src="/Logo.svg" alt="Logo" width={32} height={32} />
+          </Link>
+          <Link className="small" to="/">
+            Dashboard
+          </Link>
+          <a className="small" href="/home#features">
+            Features
+          </a>
+        </div>
+        <div className="row" style={{ alignItems: "center", gap: 12 }}>
           {isAuthenticated ? (
             <>
               <span className="small">
                 Hi, {user?.given_name ?? user?.nickname ?? "User"}
               </span>
-              <button
-                className="btn ghost"
-                onClick={() =>
-                  logout({ logoutParams: { returnTo: window.location.origin } })
-                }
-              >
+              <Link className="btn ghost" to="/profile">
+                Profile
+              </Link>
+              <button className="btn ghost" type="button" onClick={() => logout()}>
                 Logout
               </button>
             </>
           ) : (
             <>
               {configured ? (
-                <button className="btn ghost" onClick={() => loginWithRedirect()}>
+                <button
+                  className="btn ghost"
+                  type="button"
+                  onClick={() => loginWithRedirect()}
+                >
                   Sign In
                 </button>
               ) : (
-                <Link className="btn ghost" to="/signin">Sign In</Link>
+                <Link className="btn ghost" to="/signin">
+                  Sign In
+                </Link>
               )}
-              <Link className="btn primary" to="/signup">Sign Up</Link>
-              {/* <button className="btn ghost" aria-label="Settings">⚙</button> */}
+              <Link className="btn primary" to="/signup">
+                Sign Up
+              </Link>
             </>
           )}
         </div>

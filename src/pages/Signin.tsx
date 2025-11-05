@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router-dom";
-import { useOptionalAuth } from "../auth/useAuth";
+import { isAuthConfigured, useOptionalAuth } from "../auth/useAuth";
 
 const signinSchema = z.object({
   email: z.string().email("Enter a valid email"),
@@ -26,6 +26,7 @@ const SocialIconBtn: React.FC<{ label: string; onClick?: () => void }> = ({ labe
 
 const Signin: React.FC = () => {
   const n = useNavigate();
+  const configured = isAuthConfigured();
   const { loginWithRedirect } = useOptionalAuth();
   const { register, handleSubmit, formState: { errors } } = useForm<SigninInput>({
     resolver: zodResolver(signinSchema) as any,
@@ -34,10 +35,13 @@ const Signin: React.FC = () => {
 
   const onSubmit = async (data: SigninInput) => {
     try {
-      // @ts-expect-error pass through to Auth0 when configured
-      await loginWithRedirect?.({ authorizationParams: { login_hint: data.email } });
+      await loginWithRedirect({
+        authorizationParams: { login_hint: data.email },
+      });
+      if (!configured) {
+        n("/");
+      }
     } catch {
-      // Dev fallback: pretend sign-in and go to dashboard
       n("/");
     }
   };
@@ -55,8 +59,12 @@ const Signin: React.FC = () => {
             type="button"
             onClick={() => {
               try {
-                // @ts-expect-error when configured
-                loginWithRedirect?.({ authorizationParams: { connection: "google-oauth2" } });
+                loginWithRedirect({
+                  authorizationParams: { connection: "google-oauth2" },
+                });
+                if (!configured) {
+                  n("/");
+                }
               } catch {}
             }}
           >
@@ -75,7 +83,7 @@ const Signin: React.FC = () => {
           <div className="grid">
             <label>
               Email Address
-              <input className="input underline" type="email" placeholder="jhonandrio@domain.com" {...register("email")} />
+              <input className="input underline" type="email" placeholder="hello@aldowebsite.com" {...register("email")} />
             </label>
             <FieldError message={errors.email?.message} />
           </div>
@@ -103,4 +111,3 @@ const Signin: React.FC = () => {
 };
 
 export default Signin;
-
