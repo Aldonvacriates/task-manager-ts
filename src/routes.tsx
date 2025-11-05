@@ -1,10 +1,11 @@
+/* eslint-disable react-refresh/only-export-components */
 import React from "react";
 import { Outlet, createBrowserRouter } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
 import TaskDetails from "./pages/TaskDetails";
 import TaskCreate from "./pages/TaskCreate";
 import TaskEdit from "./pages/TaskEdit";
-import { ProtectedRoute } from "./auth/AuthenticationGuard";
+import AuthenticationGuard from "./auth/AuthenticationGuard";
 import { AuthProviderWithNavigate } from "./auth/Auth0Provider";
 import { NavBar } from "./components/NavBar";
 import Signup from "./pages/Signup";
@@ -30,43 +31,23 @@ export const router = createBrowserRouter([
       { path: "home", element: <HomePage /> },
       {
         index: true,
-        element: (
-          <ProtectedRoute>
-            <Dashboard />
-          </ProtectedRoute>
-        ),
+        element: <AuthenticationGuard component={Dashboard} />,
       },
       {
         path: "tasks/new",
-        element: (
-          <ProtectedRoute>
-            <TaskCreate />
-          </ProtectedRoute>
-        ),
+        element: <AuthenticationGuard component={TaskCreate} />,
       },
       {
         path: "tasks/:id",
-        element: (
-          <ProtectedRoute>
-            <TaskDetails />
-          </ProtectedRoute>
-        ),
+        element: <AuthenticationGuard component={TaskDetails} />,
       },
       {
         path: "tasks/:id/edit",
-        element: (
-          <ProtectedRoute>
-            <TaskEdit />
-          </ProtectedRoute>
-        ),
+        element: <AuthenticationGuard component={TaskEdit} />,
       },
       {
         path: "profile",
-        element: (
-          <ProtectedRoute>
-            <ProfilePage />
-          </ProtectedRoute>
-        ),
+        element: <AuthenticationGuard component={ProfilePage} />,
       },
       {
         path: "login",

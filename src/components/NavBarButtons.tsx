@@ -1,10 +1,11 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { isAuthConfigured, useOptionalAuth } from "../auth/useAuth";
+import Logout from "./Logout";
 
 const NavBarButtons: React.FC = () => {
   const configured = isAuthConfigured();
-  const { isAuthenticated, loginWithRedirect, logout, user } = useOptionalAuth();
+  const { isAuthenticated, loginWithRedirect, user } = useOptionalAuth();
 
   if (!configured) {
     return (
@@ -24,9 +25,7 @@ const NavBarButtons: React.FC = () => {
           <span className="small">
             Hi, {user?.given_name ?? user?.nickname ?? "User"}
           </span>
-          <button className="btn ghost" type="button" onClick={() => logout()}>
-            Logout
-          </button>
+          <Logout />
         </>
       ) : (
         <>

@@ -35,9 +35,10 @@ const Dashboard: React.FC = () => {
       .filter((t) => matchesText(t) && matchesStatus(t) && matchesPriority(t))
       .sort((a, b) => {
         const dir = q.dir === "asc" ? 1 : -1;
-        const key = q.sort!;
-        const av = (a as any)[key] ?? "";
-        const bv = (b as any)[key] ?? "";
+        type SortKey = "createdAt" | "dueDate" | "title";
+        const key = (q.sort ?? "createdAt") as SortKey;
+        const av = (a as Task)[key] ?? "";
+        const bv = (b as Task)[key] ?? "";
         return av > bv ? dir : av < bv ? -dir : 0;
       });
     return sorted;
@@ -56,7 +57,12 @@ const Dashboard: React.FC = () => {
           New Task
         </Link>
       </div>
-      <FiltersBar value={q} onChange={onChangeFilters} total={tasks.length} shown={filtered.length} />
+      <FiltersBar
+        value={q}
+        onChange={onChangeFilters}
+        total={tasks.length}
+        shown={filtered.length}
+      />
       <TaskList tasks={filtered} onDelete={remove} />
     </div>
   );

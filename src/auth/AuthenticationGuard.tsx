@@ -1,28 +1,28 @@
 import React from "react";
-import { Navigate, useLocation } from "react-router-dom";
-import { isAuthConfigured, useOptionalAuth } from "./useAuth";
+import { withAuthenticationRequired } from "@auth0/auth0-react";
+import { isAuthConfigured } from "./useAuth";
 
-export const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({
-  children,
+type AuthenticationGuardProps = {
+  component: React.ComponentType;
+};
+
+const AuthenticationGuard: React.FC<AuthenticationGuardProps> = ({
+  component,
 }) => {
   if (!isAuthConfigured()) {
-    return (
-      <div className="container">
-        <div className="panel">
-          <h2>Authentication Not Configured</h2>
-          <p className="small">
-            Set your Auth0 environment variables in <code>.env.local</code> to
-            access this page.
-          </p>
-        </div>
-      </div>
-    );
+    const Component = component;
+    return <Component />;
   }
 
-  const { isAuthenticated, isLoading } = useOptionalAuth();
-  const location = useLocation();
-  if (isLoading) return <div className="container">Loading auth…</div>;
-  if (!isAuthenticated)
-    return <Navigate to="/login" state={{ from: location }} replace />;
-  return <>{children}</>;
+  const Component = withAuthenticationRequired(component, {
+    onRedirecting: () => (
+      <div className="container">
+        <div className="panel">Redirecting you to the login page...</div>
+      </div>
+    ),
+  });
+
+  return <Component />;
 };
+
+export default AuthenticationGuard;

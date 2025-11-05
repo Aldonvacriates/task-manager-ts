@@ -30,6 +30,7 @@ export function useOptionalAuth(): OptionalAuth {
     window.location.origin;
 
   if (isAuthConfigured()) {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     const auth = useAuth0();
     return {
       isAuthenticated: auth.isAuthenticated,

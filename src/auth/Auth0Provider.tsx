@@ -22,7 +22,7 @@ export const AuthProviderWithNavigate: React.FC<Props> = ({ children }) => {
 
   if (!domain || !clientId) {
     console.warn(
-      "Auth0 environment variables are missing. Falling back to anonymous mode."
+      "Auth0 environment variables are missing. Skipping Auth0 provider."
     );
     return <>{children}</>;
   }

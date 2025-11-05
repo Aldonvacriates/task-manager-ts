@@ -9,10 +9,10 @@ export type Query = {
 export function parseQuery(sp: URLSearchParams): Required<Query> {
   return {
     q: sp.get("q") ?? "",
-    status: (sp.get("status") as any) ?? "all",
-    priority: (sp.get("priority") as any) ?? "all",
-    sort: (sp.get("sort") as any) ?? "createdAt",
-    dir: (sp.get("dir") as any) ?? "desc",
+    status: (sp.get("status") ?? "all") as Required<Query>["status"],
+    priority: (sp.get("priority") ?? "all") as Required<Query>["priority"],
+    sort: (sp.get("sort") ?? "createdAt") as Required<Query>["sort"],
+    dir: (sp.get("dir") ?? "desc") as Required<Query>["dir"],
   };
 }
 

@@ -16,6 +16,7 @@ const TaskEdit: React.FC = () => {
     handleSubmit,
     formState: { errors },
   } = useForm<TaskInput>({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     resolver: zodResolver(taskSchema) as any,
     values: task
       ? {

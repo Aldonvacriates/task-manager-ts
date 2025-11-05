@@ -1,10 +1,11 @@
 import React from "react";
 import PageLayout from "../components/PageLayout";
 import { isAuthConfigured, useOptionalAuth } from "../auth/useAuth";
+import Logout from "../components/Logout";
 
 const ProfilePage: React.FC = () => {
   const configured = isAuthConfigured();
-  const { isAuthenticated, isLoading, user, loginWithRedirect, logout } =
+  const { isAuthenticated, isLoading, user, loginWithRedirect } =
     useOptionalAuth();
 
   if (!configured) {
@@ -58,9 +59,7 @@ const ProfilePage: React.FC = () => {
               Manage information provided by Auth0.
             </p>
           </div>
-          <button className="btn ghost" type="button" onClick={() => logout()}>
-            Logout
-          </button>
+          <Logout />
         </div>
         {user.picture && (
           <img

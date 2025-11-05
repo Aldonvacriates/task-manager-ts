@@ -13,7 +13,7 @@ export const FiltersBar: React.FC<{
   );
   const onSelect =
     (key: keyof Query) => (e: React.ChangeEvent<HTMLSelectElement>) =>
-      onChange({ [key]: e.target.value } as any);
+      onChange({ [key]: e.target.value } as unknown as Partial<Query>);
 
   return (
     <div className="panel" style={{ marginBottom: 16 }}>
