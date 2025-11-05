@@ -8,17 +8,17 @@ export const NavBar: React.FC = () => {
   return (
     <nav className="panel nav">
       <div className="header">
-        <div className="row" style={{ alignItems: "center" }}>
-          <Link to="/home" aria-label="Home">
-            <img src="/Logo.svg" alt="Logo" width={32} height={32} style={{ cursor: "pointer" }} />
-          </Link>
-          {/* <div className="nav-links">
-            <Link to="/home">Home</Link>
-            <Link to="/home#features">Features</Link>
-            <Link to="/signup">Pages ▾</Link>
-            <a href="/home#support">Support</a>
-          </div> */}
-        </div>
+      <div className="row" style={{ alignItems: "center" }}>
+        <Link to="/home">
+        <img src="/Logo.svg" alt="Logo" width={32} height={32} />
+        </Link>
+        {/* <div className="nav-links">
+        <Link to="/home">Home</Link>
+        <Link to="/home#features">Features</Link>
+        <Link to="/signup">Pages ▾</Link>
+        <a href="/home#support">Support</a>
+        </div> */}
+      </div>
         <div className="row">
           {isAuthenticated ? (
             <>
@@ -36,12 +36,14 @@ export const NavBar: React.FC = () => {
             </>
           ) : (
             <>
-              <Link className="btn ghost" to="/signin">
-                Sign In
-              </Link>
-              <Link className="btn primary" to="/signup">
-                Sign Up
-              </Link>
+              {configured ? (
+                <button className="btn ghost" onClick={() => loginWithRedirect()}>
+                  Sign In
+                </button>
+              ) : (
+                <Link className="btn ghost" to="/signin">Sign In</Link>
+              )}
+              <Link className="btn primary" to="/signup">Sign Up</Link>
               {/* <button className="btn ghost" aria-label="Settings">⚙</button> */}
             </>
           )}
