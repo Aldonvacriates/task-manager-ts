@@ -5,7 +5,7 @@ import Dashboard from "./pages/Dashboard";
 import TaskDetails from "./pages/TaskDetails";
 import TaskCreate from "./pages/TaskCreate";
 import TaskEdit from "./pages/TaskEdit";
-import AuthenticationGuard from "./auth/AuthenticationGuard";
+import { ProtectedRoute } from "./auth/AuthenticationGuard";
 import { AuthProviderWithNavigate } from "./auth/Auth0Provider";
 import { NavBar } from "./components/NavBar";
 import Signup from "./pages/Signup";
@@ -31,23 +31,43 @@ export const router = createBrowserRouter([
       { path: "home", element: <HomePage /> },
       {
         index: true,
-        element: <AuthenticationGuard component={Dashboard} />,
+        element: (
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "tasks/new",
-        element: <AuthenticationGuard component={TaskCreate} />,
+        element: (
+          <ProtectedRoute>
+            <TaskCreate />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "tasks/:id",
-        element: <AuthenticationGuard component={TaskDetails} />,
+        element: (
+          <ProtectedRoute>
+            <TaskDetails />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "tasks/:id/edit",
-        element: <AuthenticationGuard component={TaskEdit} />,
+        element: (
+          <ProtectedRoute>
+            <TaskEdit />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "profile",
-        element: <AuthenticationGuard component={ProfilePage} />,
+        element: (
+          <ProtectedRoute>
+            <ProfilePage />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "login",

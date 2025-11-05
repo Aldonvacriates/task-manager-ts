@@ -1,49 +1,16 @@
 import React from "react";
+import { Navigate, useLocation } from "react-router-dom";
 import { isAuthConfigured, useOptionalAuth } from "./useAuth";
 
-type AuthenticationGuardProps = {
-  component: React.ComponentType;
-};
-
-const AuthenticationGuard: React.FC<AuthenticationGuardProps> = ({
-  component: Component,
+export const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({
+  children,
 }) => {
-  if (!isAuthConfigured()) {
-    return <Component />;
-  }
+  if (!isAuthConfigured()) return <>{children}</>;
 
-  const { isAuthenticated, isLoading, loginWithRedirect } = useOptionalAuth();
-
-  if (isLoading) {
-    return (
-      <div className="container">
-        <div className="panel">Checking authentication...</div>
-      </div>
-    );
-  }
-
-  if (!isAuthenticated) {
-    return (
-      <div className="container">
-        <div className="panel">
-          <h2>Login Required</h2>
-          <p className="small">
-            You need to sign in to access this page. Click the button below to
-            continue.
-          </p>
-          <button
-            className="btn primary"
-            type="button"
-            onClick={() => loginWithRedirect()}
-          >
-            Sign In with Auth0
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  return <Component />;
+  const { isAuthenticated, isLoading } = useOptionalAuth();
+  const location = useLocation();
+  if (isLoading) return <div className="container">Loading auth...</div>;
+  if (!isAuthenticated)
+    return <Navigate to="/login" state={{ from: location }} replace />;
+  return <>{children}</>;
 };
-
-export default AuthenticationGuard;
