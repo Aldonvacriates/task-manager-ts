@@ -36,27 +36,33 @@ export const NavBar: React.FC = () => {
             </>
           ) : configured ? (
             <>
-                {/* Open sign-in modal so users can choose how to sign in */}
-                <button className="btn ghost" type="button" onClick={() => setSignInOpen(true)}>
-                  Sign In
+              {/* Open sign-in modal so users can choose how to sign in */}
+              <button
+                className="btn ghost"
+                type="button"
+                onClick={() => setSignInOpen(true)}
+              >
+                Sign In
+              </button>
+              {configured ? (
+                <button
+                  className="btn primary"
+                  type="button"
+                  onClick={() =>
+                    // call Auth0 signup flow directly when configured
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    (loginWithRedirect as any)?.({
+                      authorizationParams: { screen_hint: "signup" },
+                    })
+                  }
+                >
+                  Sign Up
                 </button>
-                {configured ? (
-                  <button
-                    className="btn primary"
-                    type="button"
-                    onClick={() =>
-                      // call Auth0 signup flow directly when configured
-                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                      (loginWithRedirect as any)?.({ authorizationParams: { screen_hint: "signup" } })
-                    }
-                  >
-                    Sign Up
-                  </button>
-                ) : (
-                  <Link className="btn primary" to="/signup">
-                    Sign Up
-                  </Link>
-                )}
+              ) : (
+                <Link className="btn primary" to="/signup">
+                  Sign Up
+                </Link>
+              )}
             </>
           ) : (
             <>

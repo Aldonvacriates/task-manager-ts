@@ -1,26 +1,47 @@
 import React from "react";
-import { withAuthenticationRequired } from "@auth0/auth0-react";
-import { isAuthConfigured } from "./useAuth";
+import { isAuthConfigured, useOptionalAuth } from "./useAuth";
 
 type AuthenticationGuardProps = {
   component: React.ComponentType;
 };
 
 const AuthenticationGuard: React.FC<AuthenticationGuardProps> = ({
-  component,
+  component: Component,
 }) => {
   if (!isAuthConfigured()) {
-    const Component = component;
     return <Component />;
   }
 
-  const Component = withAuthenticationRequired(component, {
-    onRedirecting: () => (
+  const { isAuthenticated, isLoading, loginWithRedirect } = useOptionalAuth();
+
+  if (isLoading) {
+    return (
       <div className="container">
-        <div className="panel">Redirecting you to the login page...</div>
+        <div className="panel">Checking authentication...</div>
       </div>
-    ),
-  });
+    );
+  }
+
+  if (!isAuthenticated) {
+    return (
+      <div className="container">
+        <div className="panel">
+          <h2>Login Required</h2>
+          <p className="small">
+            You need to sign in to access this page. Click the button below to
+            continue.
+          </p>
+          <button
+            className="btn primary"
+            type="button"
+            onClick={() => loginWithRedirect()}
+          >
+            Sign In with Auth0
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return <Component />;
 };
