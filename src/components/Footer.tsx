@@ -54,7 +54,11 @@ export const Footer: React.FC = () => {
             <a href="#">Privacy Policy</a>
             <a href="#">Support</a>
           </div>
-          <div className="small">© 2025 Startup. All rights reserved</div>
+          <div className="small">
+            <a href="#" style={{ fontWeight: 700, textDecoration: "none" }}>
+              © {new Date().getFullYear()} Aldo Website. All rights reserved
+            </a>
+          </div>
         </div>
       </div>
     </footer>

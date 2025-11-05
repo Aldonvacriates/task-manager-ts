@@ -84,17 +84,21 @@ const HomePage: React.FC = () => {
                 <button
                   type="button"
                   className="btn primary"
-                  onClick={() => loginWithRedirect()}
+                  onClick={() =>
+                    loginWithRedirect({
+                      appState: { returnTo: "/tasks" },
+                    })
+                  }
                 >
                   Launch Dashboard
                 </button>
               ) : (
-                <Link className="btn primary" to="/">
-                  Launch Dashboard
+                <Link className="btn primary" to="/tasks">
+                  Launch Tasks
                 </Link>
               )}
               {isAuthenticated ? (
-                <Link className="btn" to="/">
+                <Link className="btn" to="/tasks">
                   View Tasks
                 </Link>
               ) : (
@@ -137,7 +141,7 @@ const HomePage: React.FC = () => {
         <div className="panel">
           <div className="header">
             <h2 style={{ margin: 0 }}>Ready to build?</h2>
-            <Link className="btn primary" to={isAuthenticated ? "/" : "/signup"}>
+            <Link className="btn primary" to={isAuthenticated ? "/tasks" : "/signup"}>
               {isAuthenticated ? "Go to Tasks" : "Get Started"}
             </Link>
           </div>

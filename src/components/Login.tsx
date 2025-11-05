@@ -7,7 +7,7 @@ const Login: React.FC = () => {
 
   const handleLogin = async () => {
     await loginWithRedirect({
-      appState: { returnTo: "/profile" },
+      appState: { returnTo: "/tasks" },
       authorizationParams: { prompt: "login" },
     });
   };

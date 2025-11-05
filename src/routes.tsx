@@ -1,10 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
 import React from "react";
 import { Outlet, createBrowserRouter } from "react-router-dom";
-import Dashboard from "./pages/Dashboard";
-import TaskDetails from "./pages/TaskDetails";
-import TaskCreate from "./pages/TaskCreate";
-import TaskEdit from "./pages/TaskEdit";
+import Tasks from "./pages/Tasks";
 import { ProtectedRoute } from "./auth/AuthenticationGuard";
 import { AuthProviderWithNavigate } from "./auth/Auth0Provider";
 import { NavBar } from "./components/NavBar";
@@ -31,35 +28,11 @@ export const router = createBrowserRouter([
       { path: "home", element: <HomePage /> },
       {
         index: true,
-        element: (
-          <ProtectedRoute>
-            <Dashboard />
-          </ProtectedRoute>
-        ),
+        element: <Tasks />,
       },
       {
-        path: "tasks/new",
-        element: (
-          <ProtectedRoute>
-            <TaskCreate />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "tasks/:id",
-        element: (
-          <ProtectedRoute>
-            <TaskDetails />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "tasks/:id/edit",
-        element: (
-          <ProtectedRoute>
-            <TaskEdit />
-          </ProtectedRoute>
-        ),
+        path: "tasks",
+        element: <Tasks />,
       },
       {
         path: "profile",
