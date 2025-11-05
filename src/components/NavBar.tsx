@@ -9,7 +9,9 @@ export const NavBar: React.FC = () => {
     <nav className="panel nav">
       <div className="header">
         <div className="row" style={{ alignItems: "center" }}>
-          <img src="/Logo.svg" alt="Logo" width={18} height={18} />
+          <Link to="/home" aria-label="Home">
+            <img src="/Logo.svg" alt="Logo" width={32} height={32} style={{ cursor: "pointer" }} />
+          </Link>
           {/* <div className="nav-links">
             <Link to="/home">Home</Link>
             <Link to="/home#features">Features</Link>
@@ -34,15 +36,13 @@ export const NavBar: React.FC = () => {
             </>
           ) : (
             <>
-              {configured ? (
-                <button className="btn ghost" onClick={() => loginWithRedirect()}>
-                  Sign In
-                </button>
-              ) : (
-                <Link className="btn ghost" to="/signin">Sign In</Link>
-              )}
-              <Link className="btn primary" to="/signup">Sign Up</Link>
-              <button className="btn ghost" aria-label="Settings">⚙</button>
+              <Link className="btn ghost" to="/signin">
+                Sign In
+              </Link>
+              <Link className="btn primary" to="/signup">
+                Sign Up
+              </Link>
+              {/* <button className="btn ghost" aria-label="Settings">⚙</button> */}
             </>
           )}
         </div>
