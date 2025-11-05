@@ -5,8 +5,19 @@ import { isAuthConfigured, useOptionalAuth } from "./useAuth";
 export const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  // In dev without Auth0 env, allow unprotected access
-  if (!isAuthConfigured()) return <>{children}</>;
+  if (!isAuthConfigured()) {
+    return (
+      <div className="container">
+        <div className="panel">
+          <h2>Authentication Not Configured</h2>
+          <p className="small">
+            Set your Auth0 environment variables in <code>.env.local</code> to
+            access this page.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   const { isAuthenticated, isLoading } = useOptionalAuth();
   const location = useLocation();

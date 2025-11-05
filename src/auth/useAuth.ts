@@ -48,10 +48,14 @@ export function useOptionalAuth(): OptionalAuth {
   }
 
   return {
-    isAuthenticated: true,
+    isAuthenticated: false,
     isLoading: false,
     user: undefined,
-    loginWithRedirect: async () => undefined,
+    loginWithRedirect: async () => {
+      throw new Error(
+        "Auth0 environment variables are missing. Update .env.local."
+      );
+    },
     logout: () => undefined,
   };
 }

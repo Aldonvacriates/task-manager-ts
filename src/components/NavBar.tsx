@@ -22,7 +22,7 @@ export const NavBar: React.FC = () => {
           </a>
         </div>
         <div className="row" style={{ alignItems: "center", gap: 12 }}>
-          {isAuthenticated ? (
+          {configured && isAuthenticated ? (
             <>
               <span className="small">
                 Hi, {user?.given_name ?? user?.nickname ?? "User"}
@@ -34,23 +34,24 @@ export const NavBar: React.FC = () => {
                 Logout
               </button>
             </>
-          ) : (
+          ) : configured ? (
             <>
-              {configured ? (
-                <button
-                  className="btn ghost"
-                  type="button"
-                  onClick={() => loginWithRedirect()}
-                >
-                  Sign In
-                </button>
-              ) : (
-                <Link className="btn ghost" to="/signin">
-                  Sign In
-                </Link>
-              )}
+              <button
+                className="btn ghost"
+                type="button"
+                onClick={() => loginWithRedirect()}
+              >
+                Sign In
+              </button>
               <Link className="btn primary" to="/signup">
                 Sign Up
+              </Link>
+            </>
+          ) : (
+            <>
+              <span className="small">Configure Auth0 to enable sign in.</span>
+              <Link className="btn ghost" to="/signin">
+                Learn More
               </Link>
             </>
           )}

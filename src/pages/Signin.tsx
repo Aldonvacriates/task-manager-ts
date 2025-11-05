@@ -46,6 +46,20 @@ const Signin: React.FC = () => {
     }
   };
 
+  if (!configured) {
+    return (
+      <div className="container auth-hero" style={{ paddingTop: 120 }}>
+        <div className="panel auth-card panel-lg">
+          <h2 style={{ marginTop: 0 }}>Auth0 Not Configured</h2>
+          <p className="small">
+            Update <code>.env.local</code> with your Auth0 credentials and restart
+            the dev server to enable sign in.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="container auth-hero" style={{ paddingTop: 120 }}>
       <div className="panel auth-card panel-lg">

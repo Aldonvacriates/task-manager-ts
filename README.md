@@ -48,7 +48,7 @@ Open the printed URL (typically http://localhost:5173).
 - Task dashboard with typed filters (search/status/priority/sort) backed by URL state
 - Create, edit, and delete tasks with zod + react-hook-form validation
 - Detailed task view with metadata (status, priority, due, created/updated)
-- Auth0-based login/logout, protected routes, and anonymous dev fallback
+- Auth0-based login/logout with protected routes
 - Global task store via React Context and typed hooks
 - Landing, sign-in, and sign-up pages styled for the experience
 

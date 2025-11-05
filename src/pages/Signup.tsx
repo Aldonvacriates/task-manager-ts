@@ -2,7 +2,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useOptionalAuth } from "../auth/useAuth";
+import { isAuthConfigured, useOptionalAuth } from "../auth/useAuth";
 
 const signupSchema = z
   .object({
@@ -31,6 +31,7 @@ const SocialButton: React.FC<{ label: string }> = ({ label }) => (
 );
 
 const Signup: React.FC = () => {
+  const configured = isAuthConfigured();
   const { loginWithRedirect } = useOptionalAuth();
   const {
     register,
@@ -50,6 +51,20 @@ const Signup: React.FC = () => {
       // dev fallback
     }
   };
+
+  if (!configured) {
+    return (
+      <div className="container auth-hero" style={{ paddingTop: 120 }}>
+        <div className="panel auth-card panel-lg">
+          <h2 style={{ marginTop: 0 }}>Auth0 Not Configured</h2>
+          <p className="small">
+            Update <code>.env.local</code> with your Auth0 credentials and restart
+            the dev server to enable sign up.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="container auth-hero" style={{ paddingTop: 120 }}>

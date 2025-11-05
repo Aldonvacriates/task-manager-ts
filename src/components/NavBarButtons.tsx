@@ -9,25 +9,10 @@ const NavBarButtons: React.FC = () => {
   if (!configured) {
     return (
       <div className="row" style={{ gap: 12 }}>
-        {isAuthenticated ? (
-          <>
-            <span className="small">
-              Hi, {user?.given_name ?? user?.nickname ?? "User"}
-            </span>
-            <Link className="btn ghost" to="/signin">
-              Switch Account
-            </Link>
-          </>
-        ) : (
-          <>
-            <Link className="btn ghost" to="/signin">
-              Sign In
-            </Link>
-            <Link className="btn primary" to="/signup">
-              Sign Up
-            </Link>
-          </>
-        )}
+        <span className="small">Configure Auth0 to enable sign in.</span>
+        <Link className="btn ghost" to="/signin">
+          Learn More
+        </Link>
       </div>
     );
   }
