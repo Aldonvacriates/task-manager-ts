@@ -15,6 +15,7 @@ import TaskCreate from "./pages/TaskCreate";
 import TaskDetails from "./pages/TaskDetails";
 import TaskEdit from "./pages/TaskEdit";
 import NotFound from "./pages/NotFound";
+import LoginLanding from "./pages/LoginLanding";
 
 const Layout: React.FC = () => (
   <AuthProviderWithNavigate>
@@ -80,14 +81,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "login",
-        element: (
-          <div className="container">
-            <div className="panel">
-              <h2>Login Required</h2>
-              <p>Use the Login button in the top bar.</p>
-            </div>
-          </div>
-        ),
+        element: <LoginLanding />,
       },
       { path: "signin", element: <Signin /> },
       { path: "signup", element: <Signup /> },
