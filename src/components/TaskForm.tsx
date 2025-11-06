@@ -22,12 +22,14 @@ const TaskForm: React.FC = () => {
   const [description, setDescription] = useState("");
   const [status, setStatus] = useState<Task["status"]>("todo");
   const [priority, setPriority] = useState<Task["priority"]>("medium");
+  const [dueDate, setDueDate] = useState<string>("");
 
   const resetForm = () => {
     setTitle("");
     setDescription("");
     setStatus("todo");
     setPriority("medium");
+    setDueDate("");
   };
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -36,11 +38,13 @@ const TaskForm: React.FC = () => {
     const trimmedTitle = title.trim();
     const trimmedDescription = description.trim();
 
+    const dueDateIso = dueDate ? new Date(dueDate).toISOString() : undefined;
     const payload: Omit<Task, "id" | "createdAt" | "updatedAt"> = {
       title: trimmedTitle,
       description: trimmedDescription ? trimmedDescription : undefined,
       status,
       priority,
+      dueDate: dueDateIso,
       ownerId: user?.sub,
     };
 
@@ -122,6 +126,20 @@ const TaskForm: React.FC = () => {
               ))}
             </select>
           </label>
+          <label>
+            <span
+              className="small"
+              style={{ display: "block", marginBottom: 6 }}
+            >
+              Due date (optional)
+            </span>
+            <input
+              className="input"
+              type="datetime-local"
+              value={dueDate}
+              onChange={(event) => setDueDate(event.target.value)}
+            />
+          </label>
         </div>
         <label>
           <span className="small" style={{ display: "block", marginBottom: 6 }}>
@@ -144,7 +162,7 @@ const TaskForm: React.FC = () => {
           className="btn ghost"
           type="button"
           onClick={resetForm}
-          disabled={!title && !description}
+          disabled={!title && !description && !dueDate}
         >
           Clear
         </button>
