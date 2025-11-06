@@ -21,9 +21,42 @@ a{color:var(--accent);text-decoration:none}
 .badge.warn{background:rgba(234,179,8,.12);border-color:#eab308;color:#f1d35c}
 .badge.danger{background:rgba(244,63,94,.12);border-color:#f43f5e;color:#fda4af}
 .card{background:#121735;border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:12px}
-.card.card--done{background:rgba(34,197,94,.08);border-color:rgba(34,197,94,.6)}
-.card.card--done h3{color:rgba(226,255,236,.9);text-decoration:line-through}
-.card.card--done .small{color:rgba(226,255,236,.7)}
+.task-card{position:relative;display:flex;flex-direction:column;gap:16px;padding:22px;background:linear-gradient(145deg,rgba(20,27,60,.95),rgba(13,18,40,.95));border:1px solid rgba(124,156,255,.14);border-radius:18px;box-shadow:0 18px 40px rgba(9,11,28,.45);transition:transform .24s ease,box-shadow .24s ease,border-color .24s ease}
+.task-card:hover{transform:translateY(-4px);border-color:rgba(124,156,255,.4);box-shadow:0 24px 48px rgba(12,16,38,.55)}
+.task-card.card--done{background:linear-gradient(145deg,rgba(17,36,28,.96),rgba(12,25,22,.95));border-color:rgba(34,197,94,.45);box-shadow:0 20px 46px rgba(24,60,40,.45)}
+.task-card.card--done .task-card__title{color:#d8ffe8}
+.task-card__heading{display:flex;flex-direction:column;gap:10px}
+.task-card__title-row{display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:12px}
+.task-card__title-col{flex:1 1 220px}
+.task-card__title{margin:0;font-size:18px;font-weight:600;letter-spacing:.01em}
+.task-card__title-input{font-size:17px;font-weight:600;background:rgba(15,20,46,.85);border-color:rgba(124,156,255,.35);width:100%}
+.task-card--editing .task-card__title-input{box-shadow:0 0 0 2px rgba(124,156,255,.25)}
+.task-card__meta-text{margin:0;font-size:12px;color:var(--muted);letter-spacing:.02em}
+.task-card__body{background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05);border-radius:14px;padding:14px 16px;transition:border-color .24s ease,background .24s ease}
+.task-card--editing .task-card__body{background:rgba(124,156,255,.08);border-color:rgba(124,156,255,.35)}
+.task-card__textarea{min-height:140px}
+.task-card__description{margin:0;color:rgba(230,236,255,.85);line-height:1.5}
+.task-card__description--empty{color:rgba(154,167,199,.75);font-style:italic}
+.task-card__meta{display:flex;flex-wrap:wrap;gap:18px;padding-top:12px;border-top:1px solid rgba(255,255,255,.05)}
+.task-card__meta-item{display:flex;flex-direction:column;gap:4px;min-width:120px}
+.task-card__meta-label{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:rgba(154,167,199,.75)}
+.task-card__meta-value{font-size:14px;color:#e6ecff;font-weight:600;letter-spacing:.01em}
+.task-card__actions{display:flex;flex-wrap:wrap;gap:10px;justify-content:flex-end}
+.task-card .btn{border-radius:14px;padding:9px 18px;font-weight:600;transition:transform .2s ease,box-shadow .2s ease,background .2s ease,border-color .2s ease}
+.task-card .btn:hover{transform:translateY(-1px)}
+.task-card .btn.primary{box-shadow:0 10px 24px rgba(124,156,255,.32)}
+.task-card .btn.ghost{background:rgba(255,255,255,.02);border-color:rgba(255,255,255,.18)}
+.task-card .btn.ghost:hover{background:rgba(124,156,255,.16);border-color:rgba(124,156,255,.45)}
+.task-card .btn.danger{box-shadow:0 12px 24px rgba(255,107,107,.3)}
+.task-chip-group{display:flex;flex-wrap:wrap;gap:8px}
+.task-card__title-row .task-chip-group{flex-shrink:0}
+.task-chip{display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:999px;font-size:12px;font-weight:600;letter-spacing:.02em;text-transform:capitalize;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);color:var(--ink);transition:background .24s ease,border-color .24s ease,color .24s ease}
+.task-chip--status-todo{background:rgba(124,156,255,.15);border-color:rgba(124,156,255,.45);color:var(--accent)}
+.task-chip--status-in_progress{background:rgba(234,179,8,.18);border-color:rgba(234,179,8,.45);color:#f6d663}
+.task-chip--status-done{background:rgba(34,197,94,.18);border-color:rgba(34,197,94,.45);color:#8cf5b6}
+.task-chip--priority-low{background:rgba(34,197,94,.12);border-color:rgba(34,197,94,.4);color:#8cf5b6}
+.task-chip--priority-medium{background:rgba(124,156,255,.18);border-color:rgba(124,156,255,.45);color:#a9baff}
+.task-chip--priority-high{background:rgba(244,63,94,.18);border-color:rgba(244,63,94,.48);color:#ffb4c1}
 .small{color:var(--muted);font-size:12px}
 hr{border:0;border-top:1px solid rgba(255,255,255,.08);margin:12px 0}
 

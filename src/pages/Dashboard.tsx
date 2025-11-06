@@ -7,10 +7,12 @@ import { useOptionalAuth } from "../auth/useAuth";
 import { FiltersBar } from "../components/FiltersBar";
 import { parseQuery, toQueryString } from "../lib/query";
 import type { Task } from "../types/task";
+import TaskForm from "../components/TaskForm";
+import { TaskErrorBanner } from "../components/TaskErrorBanner";
 
 const Dashboard: React.FC = () => {
   const { user, isAuthenticated } = useOptionalAuth();
-  const { tasks, remove, reload } = useTasks();
+  const { tasks, remove, reload, error, clearError } = useTasks();
   const [sp, setSp] = useSearchParams();
   const q = useMemo(() => parseQuery(sp), [sp]);
 
@@ -51,11 +53,20 @@ const Dashboard: React.FC = () => {
 
   return (
     <div className="container">
-      <div className="header">
-        <h1>Tasks</h1>
+      <div className="header" style={{ marginBottom: 12 }}>
+        <div>
+          <h1 style={{ margin: "0 0 4px" }}>Let&apos;s get started!</h1>
+          <p className="small" style={{ margin: 0 }}>
+            What do you want to do today?
+          </p>
+        </div>
         <Link className="btn primary" to="/tasks/new">
           New Task
         </Link>
+      </div>
+      <TaskErrorBanner message={error} onDismiss={clearError} />
+      <div style={{ marginBottom: 16 }}>
+        <TaskForm />
       </div>
       <FiltersBar
         value={q}

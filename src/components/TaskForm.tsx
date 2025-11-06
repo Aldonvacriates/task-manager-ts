@@ -1,44 +1,62 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useTasks } from "../context/TaskContext";
 import type { Task } from "../types/task";
 import { useOptionalAuth } from "../auth/useAuth";
 
-const defaultTaskShape: Pick<
-  Task,
-  "status" | "priority" | "dueDate" | "description"
-> = {
-  status: "todo",
-  priority: "medium",
-  dueDate: undefined,
-  description: "",
-};
+const statusOptions: Array<{ label: string; value: Task["status"] }> = [
+  { label: "To Do", value: "todo" },
+  { label: "In Progress", value: "in_progress" },
+  { label: "Done", value: "done" },
+];
+
+const priorityOptions: Array<{ label: string; value: Task["priority"] }> = [
+  { label: "Low", value: "low" },
+  { label: "Medium", value: "medium" },
+  { label: "High", value: "high" },
+];
 
 const TaskForm: React.FC = () => {
-  const { create } = useTasks();
+  const { create, clearError } = useTasks();
   const { user } = useOptionalAuth();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [status, setStatus] = useState<Task["status"]>("todo");
+  const [priority, setPriority] = useState<Task["priority"]>("medium");
 
   const resetForm = () => {
     setTitle("");
     setDescription("");
+    setStatus("todo");
+    setPriority("medium");
   };
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
+    const trimmedTitle = title.trim();
+    const trimmedDescription = description.trim();
+
     const payload: Omit<Task, "id" | "createdAt" | "updatedAt"> = {
-      title: title.trim(),
-      description: description.trim() || undefined,
-      ...defaultTaskShape,
+      title: trimmedTitle,
+      description: trimmedDescription ? trimmedDescription : undefined,
+      status,
+      priority,
       ownerId: user?.sub,
     };
 
-    create(payload);
-    resetForm();
+    try {
+      clearError();
+      create(payload);
+      resetForm();
+    } catch (err) {
+      console.error("Unable to create task.", err);
+    }
   };
 
-  const canSubmit = title.trim().length > 0;
+  const canSubmit = useMemo(
+    () => title.trim().length > 0,
+    [title]
+  );
 
   return (
     <form className="panel" onSubmit={handleSubmit}>
@@ -55,6 +73,56 @@ const TaskForm: React.FC = () => {
             required
           />
         </label>
+        <div
+          className="grid"
+          style={{
+            gap: 12,
+            gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))",
+          }}
+        >
+          <label>
+            <span
+              className="small"
+              style={{ display: "block", marginBottom: 6 }}
+            >
+              Status
+            </span>
+            <select
+              className="select"
+              value={status}
+              onChange={(event) =>
+                setStatus(event.target.value as Task["status"])
+              }
+            >
+              {statusOptions.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label>
+            <span
+              className="small"
+              style={{ display: "block", marginBottom: 6 }}
+            >
+              Priority
+            </span>
+            <select
+              className="select"
+              value={priority}
+              onChange={(event) =>
+                setPriority(event.target.value as Task["priority"])
+              }
+            >
+              {priorityOptions.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </label>
+        </div>
         <label>
           <span className="small" style={{ display: "block", marginBottom: 6 }}>
             Description (optional)

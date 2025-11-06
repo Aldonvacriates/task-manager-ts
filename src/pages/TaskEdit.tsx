@@ -5,11 +5,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { taskSchema } from "../validation/taskSchema";
 import type { TaskInput } from "../validation/taskSchema";
 import { useTasks } from "../context/TaskContext";
+import { TaskErrorBanner } from "../components/TaskErrorBanner";
 
 const TaskEdit: React.FC = () => {
   const { id } = useParams();
   const n = useNavigate();
-  const { tasks, update } = useTasks();
+  const { tasks, update, clearError, error } = useTasks();
   const task = tasks.find((t) => t.id === id);
   const {
     register,
@@ -32,8 +33,13 @@ const TaskEdit: React.FC = () => {
   if (!task) return <div className="container">Task not found</div>;
 
   const onSubmit = (data: TaskInput) => {
-    update(task.id, data);
-    n(`/tasks/${task.id}`);
+    try {
+      clearError();
+      update(task.id, data);
+      n(`/tasks/${task.id}`);
+    } catch (err) {
+      console.error("Unable to update task.", err);
+    }
   };
 
   return (
@@ -41,6 +47,7 @@ const TaskEdit: React.FC = () => {
       <div className="header">
         <h2>Edit Task</h2>
       </div>
+      <TaskErrorBanner message={error} onDismiss={clearError} />
       <form className="panel grid cols-2" onSubmit={handleSubmit(onSubmit)}>
         <div className="grid">
           <label>

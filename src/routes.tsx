@@ -1,7 +1,6 @@
 /* eslint-disable react-refresh/only-export-components */
 import React from "react";
 import { Outlet, createBrowserRouter } from "react-router-dom";
-import Tasks from "./pages/Tasks";
 import { ProtectedRoute } from "./auth/AuthenticationGuard";
 import { AuthProviderWithNavigate } from "./auth/Auth0Provider";
 import { NavBar } from "./components/NavBar";
@@ -11,6 +10,10 @@ import HomePage from "./pages/HomePage";
 import Signin from "./pages/Signin";
 import ProfilePage from "./pages/ProfilePage";
 import AuthCallback from "./pages/AuthCallback";
+import Dashboard from "./pages/Dashboard";
+import TaskCreate from "./pages/TaskCreate";
+import TaskDetails from "./pages/TaskDetails";
+import TaskEdit from "./pages/TaskEdit";
 
 const Layout: React.FC = () => (
   <AuthProviderWithNavigate>
@@ -27,12 +30,44 @@ export const router = createBrowserRouter([
     children: [
       { path: "home", element: <HomePage /> },
       {
-        index: true,
-        element: <Tasks />,
+        path: "tasks",
+        element: (
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>
+        ),
       },
       {
-        path: "tasks",
-        element: <Tasks />,
+        index: true,
+        element: (
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "tasks/new",
+        element: (
+          <ProtectedRoute>
+            <TaskCreate />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "tasks/:id",
+        element: (
+          <ProtectedRoute>
+            <TaskDetails />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "tasks/:id/edit",
+        element: (
+          <ProtectedRoute>
+            <TaskEdit />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "profile",

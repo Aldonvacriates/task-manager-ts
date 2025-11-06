@@ -1,11 +1,12 @@
 import React, { useMemo } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useTasks } from "../context/TaskContext";
+import { TaskErrorBanner } from "../components/TaskErrorBanner";
 
 const TaskDetails: React.FC = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { tasks, remove } = useTasks();
+  const { tasks, remove, clearError, error } = useTasks();
   const task = useMemo(() => tasks.find((t) => t.id === id), [tasks, id]);
 
   if (!task) {
@@ -21,6 +22,7 @@ const TaskDetails: React.FC = () => {
 
   return (
     <div className="container">
+      <TaskErrorBanner message={error} onDismiss={clearError} />
       <div className="panel">
         <div className="header">
           <h2 style={{ margin: 0 }}>{task.title}</h2>
@@ -32,8 +34,13 @@ const TaskDetails: React.FC = () => {
               className="btn danger"
               type="button"
               onClick={() => {
-                remove(task.id);
-                navigate("/");
+                try {
+                  clearError();
+                  remove(task.id);
+                  navigate("/tasks", { replace: true });
+                } catch (err) {
+                  console.error("Unable to delete task.", err);
+                }
               }}
             >
               Delete

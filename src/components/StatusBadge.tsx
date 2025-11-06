@@ -5,12 +5,15 @@ export const StatusBadge: React.FC<{
   task: Pick<Task, "status" | "priority">;
 }> = ({ task }) => {
   const statusLabel = task.status.replace("_", " ");
-  const statusClass =
-    task.status === "done" ? "ok" : task.status === "in_progress" ? "warn" : "";
 
   return (
-    <span className={`badge ${statusClass}`}>
-      {statusLabel} | {task.priority}
+    <span className="task-chip-group" aria-label={`Status ${statusLabel}, priority ${task.priority}`}>
+      <span className={`task-chip task-chip--status task-chip--status-${task.status}`}>
+        {statusLabel}
+      </span>
+      <span className={`task-chip task-chip--priority task-chip--priority-${task.priority}`}>
+        {task.priority}
+      </span>
     </span>
   );
 };

@@ -7,10 +7,11 @@ import { useTasks } from "../context/TaskContext";
 import { useNavigate } from "react-router-dom";
 import { useOptionalAuth } from "../auth/useAuth";
 import type { Task } from "../types/task";
+import { TaskErrorBanner } from "../components/TaskErrorBanner";
 
 const TaskCreate: React.FC = () => {
   const { user } = useOptionalAuth();
-  const { create } = useTasks();
+  const { create, clearError, error } = useTasks();
   const n = useNavigate();
   const {
     register,
@@ -27,8 +28,13 @@ const TaskCreate: React.FC = () => {
       ...data,
       ownerId: user?.sub,
     };
-    const newTask = create(payload);
-    n(`/tasks/${newTask.id}`);
+    try {
+      clearError();
+      const newTask = create(payload);
+      n(`/tasks/${newTask.id}`);
+    } catch (err) {
+      console.error("Unable to create task.", err);
+    }
   };
 
   return (
@@ -36,6 +42,7 @@ const TaskCreate: React.FC = () => {
       <div className="header">
         <h2>New Task</h2>
       </div>
+      <TaskErrorBanner message={error} onDismiss={clearError} />
       <form className="panel grid cols-2" onSubmit={handleSubmit(onSubmit)}>
         <div className="grid">
           <label>

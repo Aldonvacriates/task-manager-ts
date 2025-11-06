@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
-import type { Task } from "../types/task";
+import React, { useEffect, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 import { useTasks } from "../context/TaskContext";
+import type { Task } from "../types/task";
 import { StatusBadge } from "./StatusBadge";
 
 type TaskCardProps = {
@@ -8,8 +9,18 @@ type TaskCardProps = {
   onDelete?: (id: string) => void;
 };
 
+const formatDate = (value?: string, fallback = "Not scheduled") =>
+  value
+    ? new Date(value).toLocaleString(undefined, {
+        month: "short",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      })
+    : fallback;
+
 export const TaskCard: React.FC<TaskCardProps> = ({ task, onDelete }) => {
-  const { update, remove } = useTasks();
+  const { update, remove, clearError } = useTasks();
   const [isEditing, setIsEditing] = useState(false);
   const [title, setTitle] = useState(task.title);
   const [description, setDescription] = useState(task.description ?? "");
@@ -23,7 +34,12 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, onDelete }) => {
   }, [task.title, task.description, isEditing]);
 
   const handleDelete = () => {
-    (onDelete ?? remove)(task.id);
+    try {
+      clearError();
+      (onDelete ?? remove)(task.id);
+    } catch (err) {
+      console.error("Unable to delete task.", err);
+    }
   };
 
   const trimmedTitle = title.trim();
@@ -32,55 +48,86 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, onDelete }) => {
   const handleSave = () => {
     if (!canSave) return;
 
-    update(task.id, {
-      title: trimmedTitle,
-      description: description.trim() || undefined,
-    });
-    setIsEditing(false);
+    try {
+      clearError();
+      update(task.id, {
+        title: trimmedTitle,
+        description: description.trim() || undefined,
+      });
+      setIsEditing(false);
+    } catch (err) {
+      console.error("Unable to update task.", err);
+    }
   };
 
   const handleToggleStatus = () => {
-    update(task.id, { status: isDone ? "todo" : "done" });
+    try {
+      clearError();
+      update(task.id, { status: isDone ? "todo" : "done" });
+    } catch (err) {
+      console.error("Unable to toggle task status.", err);
+    }
   };
 
+  const meta = useMemo(
+    () => [
+      { label: "Due", value: formatDate(task.dueDate, "No due date") },
+      { label: "Created", value: formatDate(task.createdAt) },
+    ],
+    [task.dueDate, task.createdAt]
+  );
+
   return (
-    <div className={`card ${isDone ? "card--done" : ""}`}>
-      <div className="header" style={{ marginBottom: 12, gap: 12 }}>
-        {isEditing ? (
-          <input
-            className="input"
-            value={title}
-            onChange={(event) => setTitle(event.target.value)}
-            autoFocus
-          />
-        ) : (
-          <h3 style={{ margin: 0 }}>{task.title}</h3>
-        )}
-        <StatusBadge task={task} />
+    <article className={`card task-card ${isEditing ? "task-card--editing" : ""} ${isDone ? "card--done" : ""}`}>
+      <div className="task-card__heading">
+        <div className="task-card__title-row">
+          <div className="task-card__title-col">
+            {isEditing ? (
+              <input
+                className="input task-card__title-input"
+                value={title}
+                onChange={(event) => setTitle(event.target.value)}
+                autoFocus
+              />
+            ) : (
+              <h3 className="task-card__title">{task.title}</h3>
+            )}
+          </div>
+          <StatusBadge task={task} />
+        </div>
+        <p className="task-card__meta-text">Last updated {formatDate(task.updatedAt)}</p>
       </div>
-      {isEditing ? (
-        <textarea
-          className="textarea"
-          rows={4}
-          value={description}
-          onChange={(event) => setDescription(event.target.value)}
-        />
-      ) : task.description ? (
-        <p className="small" style={{ marginTop: 0 }}>
-          {task.description}
-        </p>
-      ) : (
-        <p className="small" style={{ marginTop: 0, opacity: 0.7 }}>
-          No additional details yet.
-        </p>
-      )}
-      <div
-        className="row"
-        style={{ justifyContent: "flex-end", marginTop: 16, gap: 10 }}
-      >
+
+      <div className="task-card__body">
+        {isEditing ? (
+          <textarea
+            className="textarea task-card__textarea"
+            rows={4}
+            value={description}
+            onChange={(event) => setDescription(event.target.value)}
+          />
+        ) : description ? (
+          <p className="task-card__description">{description}</p>
+        ) : (
+          <p className="task-card__description task-card__description--empty">
+            Add context or next steps to keep everyone aligned.
+          </p>
+        )}
+      </div>
+
+      <div className="task-card__meta">
+        {meta.map((item) => (
+          <div key={item.label} className="task-card__meta-item">
+            <span className="task-card__meta-label">{item.label}</span>
+            <span className="task-card__meta-value">{item.value}</span>
+          </div>
+        ))}
+      </div>
+
+      <div className="task-card__actions">
         {isEditing ? (
           <>
-            <button className="btn" type="button" onClick={() => setIsEditing(false)}>
+            <button className="btn ghost" type="button" onClick={() => setIsEditing(false)}>
               Cancel
             </button>
             <button
@@ -94,11 +141,14 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, onDelete }) => {
           </>
         ) : (
           <>
-            <button className="btn" type="button" onClick={() => setIsEditing(true)}>
+            <Link className="btn ghost" to={`/tasks/${task.id}`}>
+              Details
+            </Link>
+            <button className="btn ghost" type="button" onClick={() => setIsEditing(true)}>
               Edit
             </button>
             <button
-              className={`btn ${isDone ? "" : "primary"}`}
+              className={`btn ${isDone ? "ghost" : "primary"}`}
               type="button"
               onClick={handleToggleStatus}
             >
@@ -110,6 +160,6 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, onDelete }) => {
           </>
         )}
       </div>
-    </div>
+    </article>
   );
 };
