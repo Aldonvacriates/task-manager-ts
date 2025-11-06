@@ -14,6 +14,7 @@ import Dashboard from "./pages/Dashboard";
 import TaskCreate from "./pages/TaskCreate";
 import TaskDetails from "./pages/TaskDetails";
 import TaskEdit from "./pages/TaskEdit";
+import NotFound from "./pages/NotFound";
 
 const Layout: React.FC = () => (
   <AuthProviderWithNavigate>
@@ -91,7 +92,7 @@ export const router = createBrowserRouter([
       { path: "signin", element: <Signin /> },
       { path: "signup", element: <Signup /> },
       { path: "callback", element: <AuthCallback /> },
-      { path: "*", element: <div className="container">Not found</div> },
+      { path: "*", element: <NotFound /> },
     ],
   },
 ]);
