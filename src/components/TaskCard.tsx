@@ -19,19 +19,29 @@ const formatDate = (value?: string, fallback = "Not scheduled") =>
       })
     : fallback;
 
+const toInputDateValue = (value?: string): string => {
+  if (!value) return "";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
+  const offset = date.getTimezoneOffset() * 60000;
+  return new Date(date.getTime() - offset).toISOString().slice(0, 16);
+};
+
 export const TaskCard: React.FC<TaskCardProps> = ({ task, onDelete }) => {
   const { update, remove, clearError } = useTasks();
   const [isEditing, setIsEditing] = useState(false);
   const [title, setTitle] = useState(task.title);
   const [description, setDescription] = useState(task.description ?? "");
+  const [dueDate, setDueDate] = useState<string>(toInputDateValue(task.dueDate));
   const isDone = task.status === "done";
 
   useEffect(() => {
     if (!isEditing) {
       setTitle(task.title);
       setDescription(task.description ?? "");
+      setDueDate(toInputDateValue(task.dueDate));
     }
-  }, [task.title, task.description, isEditing]);
+  }, [task.title, task.description, task.dueDate, isEditing]);
 
   const handleDelete = () => {
     try {
@@ -50,9 +60,11 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, onDelete }) => {
 
     try {
       clearError();
+      const dueDateIso = dueDate ? new Date(dueDate).toISOString() : undefined;
       update(task.id, {
         title: trimmedTitle,
         description: description.trim() || undefined,
+        dueDate: dueDateIso,
       });
       setIsEditing(false);
     } catch (err) {
@@ -114,6 +126,20 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, onDelete }) => {
           </p>
         )}
       </div>
+
+      {isEditing && (
+        <div className="task-card__form-grid">
+          <label className="task-card__control">
+            <span className="task-card__control-label">Due Date</span>
+            <input
+              className="input task-card__control-input"
+              type="datetime-local"
+              value={dueDate}
+              onChange={(event) => setDueDate(event.target.value)}
+            />
+          </label>
+        </div>
+      )}
 
       <div className="task-card__meta">
         {meta.map((item) => (

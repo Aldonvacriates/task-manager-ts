@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { useTasks } from "../context/TaskContext";
 import { TaskList } from "../components/TaskList";
 import { taskService } from "../services/taskService";
@@ -53,17 +53,12 @@ const Dashboard: React.FC = () => {
 
   return (
     <div className="container">
-      <div className="header" style={{ marginBottom: 12 }}>
-        <div>
-          <h1 style={{ margin: "0 0 4px" }}>Let&apos;s get started!</h1>
-          <p className="small" style={{ margin: 0 }}>
-            What do you want to do today?
-          </p>
-        </div>
-        <Link className="btn primary" to="/tasks/new">
-          New Task
-        </Link>
-      </div>
+      <section className="panel" style={{ marginBottom: 16 }}>
+        <h1 style={{ margin: "0 0 4px" }}>Let&apos;s get started!</h1>
+        <p className="small" style={{ margin: 0 }}>
+          What do you want to do today?
+        </p>
+      </section>
       <TaskErrorBanner message={error} onDismiss={clearError} />
       <div style={{ marginBottom: 16 }}>
         <TaskForm />
