@@ -35,7 +35,7 @@ const LoginLanding: React.FC = () => {
           <span className="login-landing__dot b" />
         </div>
         <div className="login-landing__content">
-          <span className="chip">Welcome back</span>
+          <span className="chip">Welcome</span>
           <h1>
             Connect with Auth0 to unlock your typed task workspace.
           </h1>
