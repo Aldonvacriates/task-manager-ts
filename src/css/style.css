@@ -30,7 +30,17 @@ body { font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, Segoe UI, 
 .menu-scroll.active, .submenu-item a.active { color: #4A6CF7; }
 
 /* Utilities used in the Home hero */
-.chip { border-radius: 999px; padding: 10px 12px; background: rgba(74,108,247,.10); color:#7c9cff; border:1px solid rgba(124,156,255,.30) }
+.chip {
+  border-radius: 999px;
+  padding: 10px 12px;
+  background: rgba(74,108,247,.10);
+  color: #7c9cff;
+  border: 1px solid rgba(124,156,255,.30);
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
 .accent { color: #7c9cff; }
 
 /* Optional: subtle noise overlay background key used in reference */
