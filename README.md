@@ -22,8 +22,8 @@ npm install
 
 An `.env.local` file is included with your Auth0 tenant settings:
 
-- `VITE_AUTH0_DOMAIN=dev-qsutcgxzzeccn0t3.us.auth0.com`
-- `VITE_AUTH0_CLIENT_ID=6tZmcQPmhREpmvlMNLf5cNOjttUSAJr3`
+- `VITE_AUTH0_DOMAIN=dev-xxxx.us.auth0.com`
+- `VITE_AUTH0_CLIENT_ID=xxx`
 - `VITE_AUTH0_AUDIENCE=` (optional, set if you expose a secured API)
 - `VITE_AUTH0_REDIRECT_URI=http://localhost:5173/callback`
 - `VITE_AUTH0_LOGOUT_URI=http://localhost:5173`
