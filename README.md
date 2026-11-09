@@ -13,7 +13,7 @@ Personal project, built in November 2025.
 - Filter, search and sort state is kept in URL query params, so a filtered view can be bookmarked or shared and survives a refresh
 - Auth0 login and logout; the dashboard, task pages and profile page are behind a protected route
 - Tasks persist across reloads in localStorage
-- Storage errors are shown in a dismissible banner, and a root error boundary catches render errors
+- Storage errors are shown in a dismissible banner, and an app-level error boundary (`AppErrorBoundary`) wraps the router and providers
 
 ## Tech stack
 
@@ -21,9 +21,9 @@ React 19, TypeScript 5.9, Vite 7, React Router 7, Auth0 (`@auth0/auth0-react`), 
 
 ## How it works
 
-- **Protected routes with an Auth0 fallback.** `src/auth/AuthenticationGuard.tsx` wraps the private routes in `src/routes.tsx` and redirects signed-out users to `/login`. The Auth0 provider (`src/auth/Auth0Provider.tsx`) sits inside the router so it can navigate after the login redirect. `src/auth/useAuth.ts` exposes a `useOptionalAuth` hook: if the Auth0 domain or client ID is missing, the provider is skipped and protected routes render directly, so the app still runs locally without an Auth0 tenant.
+- **Protected routes with an Auth0 fallback.** `src/auth/AuthenticationGuard.tsx` wraps the private routes in `src/routes.tsx` and redirects signed-out users to `/login`. The Auth0 provider (`src/auth/Auth0Provider.tsx`) sits inside the router so it can navigate after the login redirect. If the Auth0 domain or client ID is missing, the provider is skipped, protected routes render directly and the `useOptionalAuth` hook (`src/auth/useAuth.ts`) returns a signed-out stub, so the app still runs locally without an Auth0 tenant.
 - **URL as the source of truth for filters.** `src/lib/query.ts` parses and serializes the `q`, `status`, `priority`, `sort` and `dir` params. `src/pages/Dashboard.tsx` reads them with `useSearchParams` and derives the filtered, sorted list with `useMemo` instead of keeping a separate copy in state.
-- **Context store over a storage service.** `src/context/TaskContext.tsx` provides tasks plus `create` / `update` / `remove` through a typed `useTasks` hook. It calls `src/services/taskService.ts`, which reads and writes the `tm_tasks_v1` localStorage key and throws a `TaskServiceError` on bad or unwritable data; the context turns that into an error message for the UI. Keeping storage behind the service means it could be swapped for an API without changing components.
+- **Context store over a storage service.** `src/context/TaskContext.tsx` provides tasks plus `create` / `update` / `remove` through a typed `useTasks` hook. It calls `src/services/taskService.ts`, which reads and writes the `tm_tasks_v1` localStorage key and throws a `TaskServiceError` on bad or unwritable data; the context turns that into an error message for the UI. Components read and write tasks through the context; the one direct call is the dashboard using `taskService.seed()` to add a sample task when storage is empty.
 - **Schema-validated forms.** `src/validation/taskSchema.ts` defines the task schema in zod, and the New Task and Edit Task pages (`src/pages/TaskCreate.tsx`, `src/pages/TaskEdit.tsx`) use it through react-hook-form's `zodResolver`. The quick-add form on the dashboard (`src/components/TaskForm.tsx`) uses plain controlled inputs instead.
 
 ## Getting started
@@ -82,6 +82,8 @@ src/
 
 ## What I'd improve next
 
+- Fix due dates on the New Task and Edit Task pages. The `datetime-local` input gives a value without a timezone, which the schema's `z.string().datetime()` rejects, so those forms do not submit when a due date is entered or changed, and no error is shown. The dashboard quick-add form converts the value to ISO and works.
+- Add a route `errorElement`. Render errors inside a route currently show React Router's default error screen instead of `AppErrorBoundary`.
 - Replace localStorage with a real API. Tasks are stored per browser and are not filtered by the signed-in user, even though each task records an `ownerId`.
 - Add unit tests for `taskService` and `lib/query.ts`.
 - Validate URL params in `parseQuery` (they are currently cast, not checked) and move the dashboard quick-add form onto the shared zod schema.
