@@ -75,7 +75,7 @@ const TaskCreate: React.FC = () => {
             </select>
           </label>
         </div>
-        <div>
+        <div className="grid">
           <label>
             Due Date
             <input
@@ -84,6 +84,11 @@ const TaskCreate: React.FC = () => {
               {...register("dueDate")}
             />
           </label>
+          {errors.dueDate && (
+            <span className="small" style={{ color: "salmon" }}>
+              {errors.dueDate.message}
+            </span>
+          )}
         </div>
         <div className="grid" style={{ gridColumn: "1/-1" }}>
           <label>

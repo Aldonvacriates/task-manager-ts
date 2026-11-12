@@ -6,6 +6,7 @@ import { taskSchema } from "../validation/taskSchema";
 import type { TaskInput } from "../validation/taskSchema";
 import { useTasks } from "../context/TaskContext";
 import { TaskErrorBanner } from "../components/TaskErrorBanner";
+import { toInputDateValue } from "../lib/date";
 
 const TaskEdit: React.FC = () => {
   const { id } = useParams();
@@ -25,7 +26,7 @@ const TaskEdit: React.FC = () => {
           description: task.description ?? "",
           status: task.status,
           priority: task.priority,
-          dueDate: task.dueDate ?? "",
+          dueDate: toInputDateValue(task.dueDate),
         }
       : undefined,
   });
@@ -80,7 +81,7 @@ const TaskEdit: React.FC = () => {
             </select>
           </label>
         </div>
-        <div>
+        <div className="grid">
           <label>
             Due Date
             <input
@@ -89,6 +90,11 @@ const TaskEdit: React.FC = () => {
               {...register("dueDate")}
             />
           </label>
+          {errors.dueDate && (
+            <span className="small" style={{ color: "salmon" }}>
+              {errors.dueDate.message}
+            </span>
+          )}
         </div>
         <div className="grid" style={{ gridColumn: "1/-1" }}>
           <label>
