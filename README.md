@@ -82,7 +82,6 @@ src/
 
 ## What I'd improve next
 
-- Fix due dates on the New Task and Edit Task pages. The `datetime-local` input gives a value without a timezone, which the schema's `z.string().datetime()` rejects, so those forms do not submit when a due date is entered or changed, and no error is shown. The dashboard quick-add form converts the value to ISO and works.
 - Add a route `errorElement`. Render errors inside a route currently show React Router's default error screen instead of `AppErrorBoundary`.
 - Replace localStorage with a real API. Tasks are stored per browser and are not filtered by the signed-in user, even though each task records an `ownerId`.
 - Add unit tests for `taskService` and `lib/query.ts`.
