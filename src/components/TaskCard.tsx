@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useTasks } from "../context/TaskContext";
 import type { Task } from "../types/task";
 import { StatusBadge } from "./StatusBadge";
+import { toInputDateValue } from "../lib/date";
 
 type TaskCardProps = {
   task: Task;
@@ -18,14 +19,6 @@ const formatDate = (value?: string, fallback = "Not scheduled") =>
         minute: "2-digit",
       })
     : fallback;
-
-const toInputDateValue = (value?: string): string => {
-  if (!value) return "";
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return "";
-  const offset = date.getTimezoneOffset() * 60000;
-  return new Date(date.getTime() - offset).toISOString().slice(0, 16);
-};
 
 export const TaskCard: React.FC<TaskCardProps> = ({ task, onDelete }) => {
   const { update, remove, clearError } = useTasks();
