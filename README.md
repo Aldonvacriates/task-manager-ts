@@ -1,81 +1,89 @@
-# Task Manager TS (React + TypeScript + Auth0)
+# Task Manager TS
 
-A typed task management app demonstrating:
+A typed task manager built with React 19, TypeScript and Vite, with Auth0 login, protected routes and filters that live in the URL. It is a frontend-only project for practicing typed React patterns; tasks are stored in the browser's localStorage, not on a server.
 
-- React + TypeScript
-- Auth0 authentication (optional in dev)
-- React Router routing with protected routes
-- Context API for global state
-- zod + react-hook-form validation
-- LocalStorage CRUD service (swap for REST later)
+**Live demo:** https://task-manager-ts-six.vercel.app
 
-## Requirements
-- Node 18+
-
-## Getting Started
-1) Install dependencies
-```bash
-npm install
-```
-
-2) Configure environment
-
-An `.env.local` file is included with your Auth0 tenant settings:
-
-- `VITE_AUTH0_DOMAIN=dev-xxxx.us.auth0.com`
-- `VITE_AUTH0_CLIENT_ID=xxx`
-- `VITE_AUTH0_AUDIENCE=` (optional, set if you expose a secured API)
-- `VITE_AUTH0_REDIRECT_URI=http://localhost:5173/callback`
-- `VITE_AUTH0_LOGOUT_URI=http://localhost:5173`
-- `VITE_APP_NAME=Task Manager TS`
-
-Update these values if you regenerate credentials. When Auth0 variables are omitted the UI automatically drops into a dev-friendly anonymous mode so you can continue working offline.
-
-3) Run
-```bash
-npm run dev
-```
-
-Open the printed URL (typically http://localhost:5173).
-
-## Scripts
-- `npm run dev` – start Vite dev server
-- `npm run build` – type-check and build for production
-- `npm run preview` – preview production build
-- `npm run lint` – run eslint
+Personal project, built in November 2025.
 
 ## Features
-- Task dashboard with typed filters (search/status/priority/sort) backed by URL state
-- Create, edit, and delete tasks with zod + react-hook-form validation
-- Detailed task view with metadata (status, priority, due, created/updated)
-- Auth0-based login/logout with protected routes
-- Global task store via React Context and typed hooks
-- Landing, sign-in, and sign-up pages styled for the experience
 
-## Auth0 Configuration
-1. In the [Auth0 Dashboard](https://manage.auth0.com/), create a **Single Page Application**.
-2. Add the following URLs to your application settings:
-   - **Allowed Callback URLs**: `http://localhost:5173/callback`
-   - **Allowed Logout URLs**: `http://localhost:5173`
-   - **Allowed Web Origins**: `http://localhost:5173`
-3. Copy the Domain and Client ID into `.env.local` (values already provided above).
-4. Restart the dev server after updating environment variables so Vite picks them up.
+- Create, view, edit and delete tasks with a title, description, status (to do / in progress / done), priority (low / medium / high) and optional due date
+- Search by title or description, filter by status and priority, and sort by created date, due date or title (ascending or descending)
+- Filter, search and sort state is kept in URL query params, so a filtered view can be bookmarked or shared and survives a refresh
+- Auth0 login and logout; the dashboard, task pages and profile page are behind a protected route
+- Tasks persist across reloads in localStorage
+- Storage errors are shown in a dismissible banner, and an app-level error boundary (`AppErrorBoundary`) wraps the router and providers
 
-## Project Structure
-- `src/types` – TypeScript interfaces (e.g., `Task`)
-- `src/services` – `taskService` for LocalStorage CRUD
-- `src/context` – `TaskProvider` and typed hooks
-- `src/auth` – Auth0 provider wrapper, protected route, and safe hook
-- `src/pages` – Dashboard, TaskCreate, TaskEdit, TaskDetails
-- `src/components` – UI components (NavBar, TaskList, FiltersBar, etc.)
-- `src/errors` – Error boundary
-- `src/lib` – Query parsing/serialization helpers
+## Tech stack
 
-## Auth0 Notes
-- The app uses `@auth0/auth0-react` with a router-aware provider.
-- When `VITE_AUTH0_DOMAIN` and `VITE_AUTH0_CLIENT_ID` are missing, the app falls back to a dev mode: routes are accessible, login/logout are no-ops, and `useAuth0` consumers use a safe wrapper.
+React 19, TypeScript 5.9, Vite 7, React Router 7, Auth0 (`@auth0/auth0-react`), react-hook-form, zod 4, ESLint. Deployed on Vercel.
 
-## Future Enhancements
-- Replace LocalStorage with a real API (preserve types and validation)
-- Add pagination and bulk operations
-- Add unit/integration tests
+## How it works
+
+- **Protected routes with an Auth0 fallback.** `src/auth/AuthenticationGuard.tsx` wraps the private routes in `src/routes.tsx` and redirects signed-out users to `/login`. The Auth0 provider (`src/auth/Auth0Provider.tsx`) sits inside the router so it can navigate after the login redirect. If the Auth0 domain or client ID is missing, the provider is skipped, protected routes render directly and the `useOptionalAuth` hook (`src/auth/useAuth.ts`) returns a signed-out stub, so the app still runs locally without an Auth0 tenant.
+- **URL as the source of truth for filters.** `src/lib/query.ts` parses and serializes the `q`, `status`, `priority`, `sort` and `dir` params. `src/pages/Dashboard.tsx` reads them with `useSearchParams` and derives the filtered, sorted list with `useMemo` instead of keeping a separate copy in state.
+- **Context store over a storage service.** `src/context/TaskContext.tsx` provides tasks plus `create` / `update` / `remove` through a typed `useTasks` hook. It calls `src/services/taskService.ts`, which reads and writes the `tm_tasks_v1` localStorage key and throws a `TaskServiceError` on bad or unwritable data; the context turns that into an error message for the UI. Components read and write tasks through the context; the one direct call is the dashboard using `taskService.seed()` to add a sample task when storage is empty.
+- **Schema-validated forms.** `src/validation/taskSchema.ts` defines the task schema in zod, and the New Task and Edit Task pages (`src/pages/TaskCreate.tsx`, `src/pages/TaskEdit.tsx`) use it through react-hook-form's `zodResolver`. The quick-add form on the dashboard (`src/components/TaskForm.tsx`) uses plain controlled inputs instead.
+
+## Getting started
+
+Prerequisites: Node.js 20.19+ or 22.12+ (required by Vite 7) and npm.
+
+```bash
+npm install
+cp .env.example .env.local   # then fill in your Auth0 values
+npm run dev                  # http://localhost:5173
+```
+
+### Environment variables
+
+See [`.env.example`](.env.example):
+
+| Variable | Required | Purpose |
+| --- | --- | --- |
+| `VITE_AUTH0_DOMAIN` | for login | Auth0 tenant domain |
+| `VITE_AUTH0_CLIENT_ID` | for login | Auth0 SPA client ID |
+| `VITE_AUTH0_AUDIENCE` | no | API audience, only if you call a protected API |
+| `VITE_AUTH0_REDIRECT_URI` | no | Login callback URL (defaults to the current origin) |
+| `VITE_AUTH0_LOGOUT_URI` | no | Where to return after logout (defaults to the current origin) |
+
+To set up Auth0, create a **Single Page Application** in the [Auth0 Dashboard](https://manage.auth0.com/) and add:
+
+- Allowed Callback URLs: `http://localhost:5173/callback`
+- Allowed Logout URLs: `http://localhost:5173`
+- Allowed Web Origins: `http://localhost:5173`
+
+Restart the dev server after changing env vars.
+
+### Scripts
+
+- `npm run dev` - start the Vite dev server
+- `npm run build` - type-check (`tsc -b`) and build for production
+- `npm run preview` - serve the production build
+- `npm run lint` - run ESLint
+
+There are no automated tests yet; `npm run lint` and `npm run build` are the current checks.
+
+## Project structure
+
+```
+src/
+  auth/         Auth0 provider, protected route, useOptionalAuth hook
+  components/   NavBar, FiltersBar, TaskList, TaskCard, TaskForm, ...
+  context/      TaskProvider and useTasks
+  errors/       AppErrorBoundary
+  lib/          URL query parsing and serialization
+  pages/        Dashboard, TaskCreate, TaskEdit, TaskDetails, Profile, auth pages
+  services/     taskService (localStorage CRUD)
+  types/        Task types
+  validation/   zod schemas
+```
+
+## What I'd improve next
+
+- Add a route `errorElement`. Render errors inside a route currently show React Router's default error screen instead of `AppErrorBoundary`.
+- Replace localStorage with a real API. Tasks are stored per browser and are not filtered by the signed-in user, even though each task records an `ownerId`.
+- Add unit tests for `taskService` and `lib/query.ts`.
+- Validate URL params in `parseQuery` (they are currently cast, not checked) and move the dashboard quick-add form onto the shared zod schema.
+- Remove leftovers: the unused `src/App.jsx` and the `@sentry/*` dependencies, which are installed but not wired up.
